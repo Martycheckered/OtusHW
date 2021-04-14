@@ -1,4 +1,5 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -11,16 +12,17 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class HWClass {
     private Logger logger = LogManager.getLogger(HWClass.class);
     protected static WebDriver driver;
+    TestConfig cfg = ConfigFactory.create(TestConfig.class);
 
     @Test
     public void siteTitleTest() {
-        driver.get("https://otus.ru");
+        driver.get(cfg.OtusUrl());
         String actualTitle = driver.getTitle();
 
         logger.info("Сайт открыт");
         logger.info("Заголовок сайта : "+ actualTitle);
         Assert.assertEquals("Онлайн‑курсы для профессионалов, дистанционное обучение современным профессиям",
-           actualTitle);
+                actualTitle);
     }
 
     @Before
@@ -38,12 +40,5 @@ public class HWClass {
         logger.info("Драйвер закрыт");
     }
 
-    /*@Test
-    public void webDriverTest() {
 
-        driver.get("https://otus.ru");
-        logger.info("Сайт открыт");
-
-
-    }*/
 }
