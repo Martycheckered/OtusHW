@@ -17,10 +17,11 @@ public class HWClass {
     @Test
     public void siteTitleTest() {
         driver.get(cfg.OtusUrl());
-        String actualTitle = driver.getTitle();
-
         logger.info("Сайт открыт");
-        logger.info("Заголовок сайта : "+ actualTitle);
+
+        String actualTitle = driver.getTitle();
+        logger.info("Получен заголовок сайта : "+ actualTitle);
+
         Assert.assertEquals("Онлайн‑курсы для профессионалов, дистанционное обучение современным профессиям",
                 actualTitle);
     }
