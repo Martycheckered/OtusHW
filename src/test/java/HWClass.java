@@ -16,7 +16,7 @@ public class HWClass {
 
     @Test
     public void siteTitleTest() {
-        driver.get(cfg.OtusUrl());
+        driver.get(cfg.otusUrl());
         logger.info("Сайт открыт");
 
         String actualTitle = driver.getTitle();
