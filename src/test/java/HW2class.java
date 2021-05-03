@@ -17,7 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class HW2class {
-    private Logger logger = LogManager.getLogger(HWClass.class);
+    private Logger logger = LogManager.getLogger(HW2class.class);
     protected static WebDriver driver;
     TestConfig cfg = ConfigFactory.create(TestConfig.class);
 
@@ -25,6 +25,7 @@ public class HW2class {
     public void startUp() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
+        driver.manage().window().maximize();
         logger.info("Драйвер поднят");
     }
 
@@ -41,12 +42,15 @@ public class HW2class {
         driver.get(cfg.otusUrl());
         logger.info("Сайт Отус открыт");
 
-        driver.findElement(By.cssSelector(".header2_subheader-link[href=\"/contacts/\"]")).click();
-        String address = driver.findElement(By.xpath("//*[.='Адрес']/following-sibling::div")).getText();
+        final String contactsButtonLocator = ".header2_subheader-link[href=\"/contacts/\"]";
+        final String addressElementLocator = "//*[.='Адрес']/following-sibling::div";
+
+        driver.findElement(By.cssSelector(contactsButtonLocator)).click();
+        String address = driver.findElement(By.xpath(addressElementLocator)).getText();
         logger.info("Текст адреса - "+ address);
         Assert.assertEquals(cfg.otusAddress(), address);
 
-        driver.manage().window().maximize();
+
         String title = driver.getTitle();
         logger.info("Заголовок страницы - "+ title);
         Assert.assertEquals("Контакты | OTUS", title);
@@ -58,13 +62,14 @@ public class HW2class {
         logger.info("Сайт Tele2 открыт");
 
         final String firstTelephoneNumberlocator = "div[data-cartridge-type=\"ShopNumberCatalog\"] span.phone-number span";
+        final String searchFieldLocator = "#searchNumber";
 
         //Берем первый блок, содержащий телефонный номер
         final WebElement numberBlockBefore = driver.findElement(By.cssSelector(firstTelephoneNumberlocator));
         final String beforeText = numberBlockBefore.getText();
         logger.info("Первый номер : " + beforeText);
 
-        driver.findElement(By.cssSelector("#searchNumber")).sendKeys("97");
+        driver.findElement(By.cssSelector(searchFieldLocator)).sendKeys("97");
 
         WebDriverWait wait = new WebDriverWait(driver, 5);
 
@@ -98,9 +103,13 @@ public class HW2class {
         driver.get(cfg.otusUrl());
         logger.info("Сайт Отус открыт");
 
-        driver.findElement(By.cssSelector("a[title=\"FAQ\"]")).click();
-        driver.findElement(By.xpath("//*[.='Где посмотреть программу интересующего курса?']")).click();
-        String answer = driver.findElement(By.xpath("//*[.='Где посмотреть программу интересующего курса?']/following-sibling::div")).getText();
+        final String faqButtonSelector = "a[title=\"FAQ\"]";
+        final String questionLocator = "//*[.='Где посмотреть программу интересующего курса?']";
+        final String answerLocator = "//*[.='Где посмотреть программу интересующего курса?']/following-sibling::div";
+
+        driver.findElement(By.cssSelector(faqButtonSelector)).click();
+        driver.findElement(By.xpath(questionLocator)).click();
+        String answer = driver.findElement(By.xpath(answerLocator)).getText();
         logger.info(answer);
 
         Assert.assertEquals(cfg.answer(), answer);
@@ -111,16 +120,19 @@ public class HW2class {
     @Test
     public void test4 () {
         final String email = "fofot26697@yehudabx.com";
+        final String emailFieldLocator = "input[type=\"email\"]";
+        final String submitButtonLocator = "button[type=\"submit\"]";
+        final String successSubscribeTextLocator = "p.subscribe-modal__success";
 
         driver.get(cfg.otusUrl());
         logger.info("Сайт Отус открыт");
 
         driver.manage().timeouts().implicitlyWait(3, SECONDS);
 
-        driver.findElement(By.cssSelector("input[type=\"email\"]")).sendKeys(email);
-        driver.findElement(By.cssSelector("button[type=\"submit\"]")).click();
+        driver.findElement(By.cssSelector(emailFieldLocator)).sendKeys(email);
+        driver.findElement(By.cssSelector(submitButtonLocator)).click();
         logger.info("Запрос на подписку отправлен");
-        String text = driver.findElement(By.cssSelector("p.subscribe-modal__success")).getText();
+        String text = driver.findElement(By.cssSelector(successSubscribeTextLocator)).getText();
 
         Assert.assertEquals(cfg.success(), text);
 
