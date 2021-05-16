@@ -39,7 +39,7 @@ public class YandexTest {
     }
 
     @Test
-    public void test() throws InterruptedException {
+    public void test() {
         final String ELECTRONICA_BUTTON = "a[href=\"/catalog--elektronika/54440\"]";
         final String SMARTPHONES_BUTTON = "ul[data-autotest-id=\"subItems\"] a[href^=\"/catalog--smartfony\"]";
         final String SAMSUNG_CHECKBOX = "//span[.='Samsung']/..";
@@ -105,7 +105,6 @@ public class YandexTest {
             if (isSamsungFound && isXiaomiFound) {
 
                 wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(COMPARE_BUTTON))).click();
-               // driver.findElement(By.cssSelector(COMPARE_BUTTON)).click();
                 break;
             }
         }
