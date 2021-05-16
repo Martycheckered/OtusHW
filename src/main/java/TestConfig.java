@@ -18,4 +18,7 @@ public interface TestConfig extends Config {
     @Key("subscribe.success")
     String success();
 
+    @Key("ya.market.url")
+    String market();
+
 }
