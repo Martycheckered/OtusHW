@@ -41,7 +41,7 @@ public class YandexTest {
     @Test
     public void test() {
         final String ELECTRONICA_BUTTON = "a[href=\"/catalog--elektronika/54440\"]";
-        final String SMARTPHONES_BUTTON = "ul[data-autotest-id=\"subItems\"] a[href^=\"/catalog--smartfony\"]";
+        final String SMARTPHONES_BUTTON = "//a[.='Смартфоны']";
         final String SAMSUNG_CHECKBOX = "//span[.='Samsung']/..";
         final String XIAOMI_CHECKBOX = "//span[.='Xiaomi']/..";
         final String PRICE_SORT_BUTTON = "button[data-autotest-id=\"dprice\"]";
@@ -58,7 +58,8 @@ public class YandexTest {
 
         driver.findElement(By.cssSelector(ELECTRONICA_BUTTON)).click();
         logger.info("Кнопка \"Электроника\" нажата");
-        driver.findElement(By.cssSelector(SMARTPHONES_BUTTON)).click();
+
+        driver.findElement(By.xpath(SMARTPHONES_BUTTON)).click();
         logger.info("Кнопка \"Смартфоны\" нажата");
 
         driver.findElement(By.xpath(SAMSUNG_CHECKBOX)).click();
@@ -118,8 +119,10 @@ public class YandexTest {
     //удаляем из названия смартфона информацию о цвете (цвет есть в названии товара в списке,
     // но его нет в названии товара в плашке после добавления к сравнению) - обрезаем строку после запятой
     public String getTitleWithoutColor (String title) {
-
-        return title.substring(0, title.indexOf(','));
+        if(title.contains(",")) {
+            return title.substring(0, title.indexOf(','));
+        }
+        else return title;
     }
 
 
