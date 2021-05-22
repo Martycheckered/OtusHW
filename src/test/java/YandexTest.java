@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -111,7 +112,7 @@ public class YandexTest {
         }
 
         List<WebElement> listOfCompared = driver.findElements(By.cssSelector(COMPARED_ITEM_IMAGE));
-        Assert.assertEquals(listOfCompared.size(), 2);
+        Assert.assertEquals(2, listOfCompared.size());
         logger.info("Количество товаров в списке для сравнения корректно");
     }
 
