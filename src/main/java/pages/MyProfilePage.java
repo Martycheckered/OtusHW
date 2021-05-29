@@ -44,7 +44,7 @@ public class MyProfilePage extends AbstractPage {
         clearAndFillTheFieldByCss(NAME_IN_BLOG, profile.getName());
         clearAndFillTheFieldByCss(BIRTHDATE, profile.getBirthDate());
 
-        driver.findElement(By.xpath(COUNTRY_LIST)).click();
+        /*driver.findElement(By.xpath(COUNTRY_LIST)).click();
         driver.findElement(By.xpath(COUNTRY_EXACT)).click();
 
         driver.findElement(By.xpath(CITY_LIST)).click();
@@ -58,7 +58,7 @@ public class MyProfilePage extends AbstractPage {
         WebElement checkbox = driver.findElement(By.xpath(WORK_FORMAT_CHECKBOX));
         if(!checkbox.isSelected()){
             checkbox.click();
-        }
+        }*/
 
         driver.findElement(By.xpath(FIRST_CONTACT_TYPE_LIST)).click();
         driver.findElement(By.xpath(FIRST_CONTACT)).click();
@@ -73,7 +73,7 @@ public class MyProfilePage extends AbstractPage {
 
 
         driver.findElement(By.xpath(SAVE_AND_SKIP_BUTTON)).click();
-        logger.info("Персональные данные заполнены");
+        logger.info("Personal data is set");
     }
 
 

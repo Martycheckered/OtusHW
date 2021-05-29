@@ -13,14 +13,14 @@ public class MainOtusPage extends AbstractPage {
 
     public MainOtusPage open() {
         driver.get(URL);
-        logger.info("Страница Отус открыта");
+        logger.info("Otus page is open");
 
         return this;
     }
 
     public LoginPageOtus goToLoginPage () {
         driver.findElement(By.cssSelector(LOGIN_BUTTON)).click();
-        logger.info("Переход на страницу авторизации");
+        logger.info("Transfer to authorisation page");
         return new LoginPageOtus(driver);
     }
 

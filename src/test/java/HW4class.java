@@ -32,8 +32,8 @@ public class HW4class extends BaseHooks {
 
     @Test
     public void otusTest ()  {
-        final String email = "fofot26697@yehudabx.com";
-        final String pass = "abizzu4863$";
+        final String email = System.getProperty("email");//"fofot26697@yehudabx.com";
+        final String password = System.getProperty("password");//"abizzu4863$";
         Profile otusStudent = new Profile();
         otusStudent.setName("Иван");
         otusStudent.setSurname("Сидоров");
@@ -45,7 +45,7 @@ public class HW4class extends BaseHooks {
 
         MainOtusPage mainPage = new MainOtusPage(driver);
         LoginPageOtus loginPage = mainPage.open().goToLoginPage();
-        AuthorisedMainPage authorisedMainPage = loginPage.logIn(email, pass);
+        AuthorisedMainPage authorisedMainPage = loginPage.logIn(email, password);
         MyProfilePage myProfilePage = authorisedMainPage.goToMyProfile();
         myProfilePage.fillInThePersonalInfo(otusStudent);
 
@@ -54,7 +54,7 @@ public class HW4class extends BaseHooks {
 
         MainOtusPage mainPage2 = new MainOtusPage(driver);
         LoginPageOtus loginPage2 = mainPage2.open().goToLoginPage();
-        AuthorisedMainPage authorisedMainPage2 = loginPage2.logIn(email, pass);
+        AuthorisedMainPage authorisedMainPage2 = loginPage2.logIn(email, password);
         MyProfilePage myProfilePage2 = authorisedMainPage2.goToMyProfile();
 
         Assert.assertEquals(otusStudent.getName(),
@@ -70,15 +70,7 @@ public class HW4class extends BaseHooks {
         Assert.assertEquals(otusStudent.getBirthDate(),
                 driver.findElement(By.cssSelector(MyProfilePage.BIRTHDATE)).getAttribute("value"));
 
-        Assert.assertEquals("Россия",
-                driver.findElement(By.xpath(MyProfilePage.COUNTRY_LIST)).getText());
-        Assert.assertEquals("Кемерово",
-                driver.findElement(By.xpath(MyProfilePage.CITY_LIST)).getText());
-        Assert.assertEquals("Выше среднего (Upper Intermediate)",
-                driver.findElement(By.xpath(MyProfilePage.ENGLISH_LEVEL_LIST)).getText());
 
-        Assert.assertTrue(driver.findElement(By.xpath(MyProfilePage.RADIOBUTTON_YES)).isSelected());
-        Assert.assertTrue(driver.findElement(By.xpath(MyProfilePage.WORK_FORMAT_CHECKBOX)).isSelected());
 
         Assert.assertEquals("Skype",
                 driver.findElement(By.xpath(MyProfilePage.FIRST_CONTACT_TYPE_LIST)).getText());
@@ -88,20 +80,9 @@ public class HW4class extends BaseHooks {
                 driver.findElement(By.xpath(MyProfilePage.SECOND_CONTACT_TYPE_LIST)).getText());
         Assert.assertEquals(otusStudent.getSecondContactData(),
                 driver.findElement(By.xpath(MyProfilePage.SECOND_CONTACT_FIELD)).getAttribute("value"));
+        logger.info("Data check successful");
     }
 
-    @Test
-    public void deb () {
-        final String email = "fofot26697@yehudabx.com";
-        final String pass = "abizzu4863$";
-        MainOtusPage mainPage = new MainOtusPage(driver);
-        LoginPageOtus loginPage = mainPage.open().goToLoginPage();
-        AuthorisedMainPage authorisedMainPage = loginPage.logIn(email, pass);
-        MyProfilePage myProfilePage = authorisedMainPage.goToMyProfile();
 
-        logger.info(driver.findElement(By.xpath(MyProfilePage.RADIOBUTTON_YES)).isSelected());
-
-        driver.findElement(By.xpath(MyProfilePage.RADIOBUTTON_YES)).click();
-    }
 }
 

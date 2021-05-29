@@ -17,7 +17,7 @@ public class LoginPageOtus extends AbstractPage{
         driver.findElement(By.cssSelector(EMAIL_FIELD)).sendKeys(email);
         driver.findElement(By.cssSelector(PASSWORD_FIELD)).sendKeys(password);
         driver.findElement(By.xpath(SUBMIT_BUTTON)).click();
-        logger.info("Авторизация произведена");
+        logger.info("Authorisation succesful");
         return new AuthorisedMainPage(driver);
     }
 

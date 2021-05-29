@@ -20,7 +20,7 @@ public class AuthorisedMainPage extends AbstractPage {
                 .click(driver.findElement(By.xpath(MY_ACCOUNT_BUTTON)));
         Action mouseoverAndClick = builder.build();
         mouseoverAndClick.perform();
-        logger.info("Переход в \"Мой профиль\"");
+        logger.info("Transfer to \"My profile\"");
 
         return new MyProfilePage(driver);
     }

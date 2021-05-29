@@ -20,7 +20,7 @@ public class BaseHooks {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             driver.manage().window().maximize();
         }
-        logger.info("Драйвер поднят");
+        logger.info("Driver is up");
     }
 
     @AfterClass
@@ -28,7 +28,7 @@ public class BaseHooks {
         if (driver != null) {
             driver.quit();
         }
-        logger.info("Драйвер закрыт");
+        logger.info("Driver down");
     }
 
     @After
