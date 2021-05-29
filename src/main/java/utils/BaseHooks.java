@@ -18,6 +18,7 @@ public class BaseHooks {
 
         if (driver != null) {
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            driver.manage().deleteAllCookies();
             driver.manage().window().maximize();
         }
         logger.info("Driver is up");
@@ -31,10 +32,7 @@ public class BaseHooks {
         logger.info("Driver down");
     }
 
-    @After
-    public void cleanUp() {
-        driver.manage().deleteAllCookies();
-    }
+
 
 }
 
