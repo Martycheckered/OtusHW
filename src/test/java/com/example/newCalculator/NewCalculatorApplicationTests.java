@@ -74,7 +74,7 @@ class NewCalculatorApplicationTests {
 	}
 
 	@Test
-	@DisplayName("test root extraction")
+	@DisplayName("test logarithm Extraction")
 	void test7() {
 		Double first = 27.0 ;
 		Double base = 3.0;
