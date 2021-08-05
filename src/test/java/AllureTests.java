@@ -1,5 +1,6 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Attachment;
+import io.qameta.allure.Step;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +39,7 @@ public class AllureTests {
     }
     @Test
     @DisplayName("Проверка корректности адреса и заголовка страницы")
+    @Step("Снимок экрана")
     public void test1 () {
         driver.get(cfg.otusUrl());
         logger.info("Сайт Отус открыт");
@@ -59,6 +61,7 @@ public class AllureTests {
 
     @Test
     @DisplayName("Проверка работы поиска номеров Теле2")
+    @Step("Снимок экрана")
     public void test2 () {
         driver.get(cfg.tele2());
         logger.info("Сайт Tele2 открыт");
@@ -102,6 +105,7 @@ public class AllureTests {
 
     @Test
     @DisplayName("Проверка текста по программе курса")
+    @Step("Снимок экрана")
     public void test3 () {
         driver.get(cfg.otusUrl());
         logger.info("Сайт Отус открыт");
@@ -122,6 +126,7 @@ public class AllureTests {
 
     @Test
     @DisplayName("Тест запроса на подписку")
+    @Step("Снимок экрана")
     public void test4 () {
         final String email = "fofot26697@yehudabx.com";
         final String emailFieldLocator = "input[type=\"email\"]";
