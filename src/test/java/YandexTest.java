@@ -3,128 +3,113 @@ import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
 
 public class YandexTest {
-    private final Logger logger = LogManager.getLogger(YandexTest.class);
+
+    private Logger log = LogManager.getLogger(YandexTest.class);
     protected static WebDriver driver;
-    TestConfig cfg = ConfigFactory.create(TestConfig.class);
-    private WebDriverWait wait;
+    private TestConfig testConfig = ConfigFactory.create(TestConfig.class);
 
     @Before
-    public void setUp() {
+    public void startUp() {
+        log.info("Let's test Yandex Market");
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, 5);
-        logger.info("Драйвер поднят");
+        log.info("Драйвер поднят");
     }
+
+    @Test
+    public void yandexMarketTest() {
+        final String ELECTRONICA_BUTTON = "//span[text() = 'Электроника']";
+        final String SMARTPHONES_BUTTON = "//a[normalize-space(text()) = 'Смартфоны']";
+        final String BRAND_CONTAINER = "//fieldset[@data-autotest-id = '7893318']";
+        final String SAMSUNG_CHECKBOX = "//span[text() = 'Samsung']";
+        final String XIAOMI_CHECKBOX = "//span[text() = 'Xiaomi']";
+        final String PRICE_SORT_BUTTON = "//button[text() = 'по цене']";
+        final String LOADER = "div[data-tid='8bc8e36b']";
+        final String FIRST_RESULT = "//div[@data-zone-name='SearchResults']//article[@data-autotest-id][1]";
+        final String FIRST_RESULT_TITLE = "//h3[@data-zone-name = 'title']/a";
+
+        final String ITEM_ADD_TO_COMPARISON_BUTTON = "//div[contains(@aria-label,'сравнению')]/div";
+        final String POPUP_LOCATOR = "//div[@data-apiary-widget-id ='/content/popupInformer']//div[text() ='Товар %s добавлен к сравнению']";
+        final String POPUP_TEXT_BLOCK = "input#header-search";
+        final String COMPARE_BUTTON = "//a[@href='/my/compare-lists']/parent::div";
+        final String COMPARED_ITEM_IMAGE = "//div[@data-tid='a86a07a1 2d4d9fc1']";
+
+
+        driver.get(testConfig.market());
+        log.info("Сайт яндекс маркета открыт");
+        log.info("Проведём тестирование маркета и перейдем на электронику");
+        driver.findElement(By.xpath(ELECTRONICA_BUTTON)).click();
+
+        log.info("Перейдем на смартфоны");
+        driver.findElement(By.xpath(SMARTPHONES_BUTTON)).click();
+        // найдем контейнер с брендами, в нем кликнем чекбоксы Самсунг и Сяоми
+        WebElement brandsFilter = driver.findElement(By.xpath(BRAND_CONTAINER));
+
+        log.info("Поищем Самсунг и Сяоми, цена по возрастающей");
+        brandsFilter.findElement(By.xpath(SAMSUNG_CHECKBOX)).click();
+        brandsFilter.findElement(By.xpath(XIAOMI_CHECKBOX)).click();
+        driver.findElement(By.xpath(PRICE_SORT_BUTTON)).click();
+
+        log.info("Подождём исчезновения лоадера. Затем найдем телефоны и проверим плашку");
+
+        new WebDriverWait(driver, 3).until(ExpectedConditions.invisibilityOf(driver.findElement(By.cssSelector(LOADER))));
+        WebElement firstArticle = driver.findElement(By.xpath(FIRST_RESULT));
+        String articleTitle = firstArticle.findElement(By.xpath(FIRST_RESULT_TITLE)).getAttribute("title");
+
+        WebElement addToComparisonButton = firstArticle.findElement(By.xpath(ITEM_ADD_TO_COMPARISON_BUTTON));
+        addToComparisonButton.click();
+
+        // подождём плашку
+
+        WebElement comparisonPopup = new WebDriverWait(driver, 4).until(
+                ExpectedConditions.visibilityOf(
+                        driver.findElement(By.xpath(String.format(POPUP_LOCATOR, articleTitle)))));
+        assertEquals("Поп-ап должен отображаться", true, comparisonPopup.isDisplayed());
+
+        log.info("Ищем второй телефон");
+        String anotherBrand = articleTitle.contains("Samsung") ? "Xiaomi" : "Samsung";
+        WebElement secondArticle = driver.findElement(By.xpath("//div[@data-zone-name='SearchResults']//article//a[contains(@title, '"+ anotherBrand +"')]"));
+        // нажмём на кнопку для сравнения по второму телефону
+        driver.findElement(By.xpath("//div[@data-zone-name='SearchResults']//article//a[contains(@title, '"+ anotherBrand +"')]//ancestor::article//div[contains(@aria-label,'сравнению')]/div"))
+                .click();
+        articleTitle = secondArticle.getAttribute("title");
+        comparisonPopup = new WebDriverWait(driver, 2).until(
+                ExpectedConditions.visibilityOf(
+                        driver.findElement(By.xpath(String.format(POPUP_LOCATOR, articleTitle)))));
+        assertEquals("Поп-ап должен отображаться", true, comparisonPopup.isDisplayed());
+
+        log.info("Перейдем в сравнение");
+        Actions actions = new Actions(driver);
+        actions.moveToElement(driver.findElement(By.cssSelector(POPUP_TEXT_BLOCK))).build().perform();
+        comparisonPopup.findElement(By.xpath(COMPARE_BUTTON)).click();
+
+        log.info("Посмотрим, что в сравнении находятся 2 телефона");
+        assertEquals(2,driver.findElements(By.xpath(COMPARED_ITEM_IMAGE)).size());
+    }
+
 
     @After
     public void tearDown() {
         if (driver != null) {
             driver.quit();
         }
-        logger.info("Драйвер закрыт");
-    }
-
-    @Test
-    public void test() {
-        final String ELECTRONICA_BUTTON = "a[href=\"/catalog--elektronika/54440\"]";
-        final String SMARTPHONES_BUTTON = "//a[.='Смартфоны']";
-        final String SAMSUNG_CHECKBOX = "//span[.='Samsung']/..";
-        final String XIAOMI_CHECKBOX = "//span[.='Xiaomi']/..";
-        final String PRICE_SORT_BUTTON = "button[data-autotest-id=\"dprice\"]";
-        final String LOADER = "div[data-tid=\"8bc8e36b\"]";
-        final String SMARTPHONES = "article[data-autotest-id=\"product-snippet\"]";
-        final String ITEM_TITLE = "h3 span";
-        final String ITEM_ADD_TO_COMPARE_BUTTON = "div[aria-label$=\"сравнению\"]";
-        final String POPUP_TEXT = "//div[text()[contains(.,'Всего в списке')]]/preceding-sibling::div";
-        final String COMPARE_BUTTON = "a[href=\"/my/compare-lists\"]";
-        final String COMPARED_ITEM_IMAGE = "img[alt^=\"Смартфон\"]";
-
-        driver.get(cfg.market());
-        logger.info("Сайт Яндекс.Маркет открыт");
-
-        driver.findElement(By.cssSelector(ELECTRONICA_BUTTON)).click();
-        logger.info("Кнопка \"Электроника\" нажата");
-
-        driver.findElement(By.xpath(SMARTPHONES_BUTTON)).click();
-        logger.info("Кнопка \"Смартфоны\" нажата");
-
-        driver.findElement(By.xpath(SAMSUNG_CHECKBOX)).click();
-        logger.info("Чекбокс \"Samsung\" нажат");
-        driver.findElement(By.xpath(XIAOMI_CHECKBOX)).click();
-        logger.info("Чекбокс \"Xiaomi\" нажат");
-
-        driver.findElement(By.cssSelector(PRICE_SORT_BUTTON)).click();
-        logger.info("Список отсортирован по цене");
-
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(LOADER)));
-
-        List<WebElement> listOfSmartphonesOnPage = driver.findElements(By.cssSelector(SMARTPHONES));
-
-        boolean isSamsungFound = false;
-        boolean isXiaomiFound = false;
-        for (int i = 0; i < listOfSmartphonesOnPage.size() ; i++) {
-
-            WebElement current = listOfSmartphonesOnPage.get(i);
-            String productTitle = current.findElement(By.cssSelector(ITEM_TITLE)).getText();
-
-            if( !isSamsungFound && productTitle.contains("Samsung")) {
-
-                current.findElement(By.cssSelector(ITEM_ADD_TO_COMPARE_BUTTON)).click();
-                isSamsungFound = true;
-                logger.info("Смартфон Samsung добавлен к сравнению");
-
-                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(POPUP_TEXT)));
-                Assert.assertEquals("Товар "+ getTitleWithoutColor(productTitle) +" добавлен к сравнению",
-                        driver.findElement(By.xpath(POPUP_TEXT)).getText());
-                logger.info("Текст плашки Samsung корректен");
-            }
-            if( !isXiaomiFound && productTitle.contains("Xiaomi")) {
-
-                current.findElement(By.cssSelector(ITEM_ADD_TO_COMPARE_BUTTON)).click();
-                isXiaomiFound = true;
-                logger.info("Смартфон Xiaomi добавлен к сравнению");
-
-                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(POPUP_TEXT)));
-                Assert.assertEquals("Товар "+ getTitleWithoutColor(productTitle) +" добавлен к сравнению",
-                        driver.findElement(By.xpath(POPUP_TEXT)).getText());
-                logger.info("Текст плашки Xiaomi корректен");
-            }
-            if (isSamsungFound && isXiaomiFound) {
-
-                wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(COMPARE_BUTTON))).click();
-                break;
-            }
-        }
-
-        List<WebElement> listOfCompared = driver.findElements(By.cssSelector(COMPARED_ITEM_IMAGE));
-        Assert.assertEquals(2, listOfCompared.size());
-        logger.info("Количество товаров в списке для сравнения корректно");
+        log.info("Драйвер закрыт");
     }
 
 
-    //удаляем из названия смартфона информацию о цвете (цвет есть в названии товара в списке,
-    // но его нет в названии товара в плашке после добавления к сравнению) - обрезаем строку после запятой
-    public String getTitleWithoutColor (String title) {
-        if(title.contains(",")) {
-            return title.substring(0, title.indexOf(','));
-        }
-        else return title;
-    }
-
-
-    }
+}
