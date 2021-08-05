@@ -23,7 +23,7 @@ public class YandexTest {
 
     @Before
     public void startUp() {
-        log.info("Let's test Yandex Market");
+        log.info("Начало теста");
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
